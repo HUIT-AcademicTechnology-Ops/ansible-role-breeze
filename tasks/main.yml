@@ -1,0 +1,46 @@
+---
+# tasks file for ansible-role-breeze
+
+- name: Validate required parameters and environment
+  assert:
+    that:
+      - breeze_download_url is defined
+
+#-------------------------------------------------------------------------------------------
+# Install CloudAware Breeze agent (which is not a daemon - it runs periodically from cron).
+# Installation instructions: https://docs.cloudaware.com/#_breeze_agent_installation_guide.
+#
+# Based on:
+# https://github.huit.harvard.edu/HUIT/aais-ecs-infrastructure/blob/master/common-install-base-software.yml
+#
+#-------------------------------------------------------------------------------------------
+
+- name: "Create temporary directory for Breeze installer"
+  file:
+    path: "/tmp/breeze"
+    state: directory
+    owner: root
+    group: root
+    mode: 0644
+
+- name: "Fetch and untar Breeze installer"
+  unarchive:
+    src: "{{ breeze_download_url }}"
+    dest: "/tmp/breeze"
+    remote_src: yes
+
+- name: "Make Breeze install script executable"
+  file:
+    path: "/tmp/breeze/breeze-agent/install.sh"
+    mode: 0755
+
+- name: "Execute the Breeze installer script"
+  command: "./install.sh"
+  args:
+    chdir: "/tmp/breeze/breeze-agent"
+    creates: "/etc/cron.d/breeze-agent"
+
+- name: "Remove temporary directory for Breeze installer"
+  file:
+    path: "/tmp/breeze"
+    state: absent

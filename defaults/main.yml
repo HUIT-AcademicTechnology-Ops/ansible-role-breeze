@@ -1,0 +1,4 @@
+---
+# defaults file for ansible-role-breeze
+
+breeze_download_url: https://repo.cloudservices.huit.harvard.edu/tgz/breeze-agent.tgz
