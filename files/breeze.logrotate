@@ -1,0 +1,5 @@
+/var/log/breeze-agent.log {
+	rotate 1
+	size 1M
+	missingok
+}

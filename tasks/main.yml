@@ -23,7 +23,7 @@
     group: root
     mode: 0644
 
-- name: "Fetch and untar Breeze installer"
+- name: "Fetch and unarchive Breeze installer"
   unarchive:
     src: "{{ breeze_download_url }}"
     dest: "/tmp/breeze"
@@ -44,3 +44,10 @@
   file:
     path: "/tmp/breeze"
     state: absent
+
+- name: set up logrotate
+  copy:
+    src: breeze.logrotate
+    dest: /etc/logrotate.d/breeze
+    mode: 0644
+    owner: root
